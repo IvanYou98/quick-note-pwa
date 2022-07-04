@@ -1,0 +1,18 @@
+.register-link-container {
+    margin-top: 30px;
+    width: 100%;
+    text-align: center;
+}
+
+.login-btn-container {
+    padding-top: 50px;
+    width: 20%;
+    margin: 0 auto;
+}
+
+.err-message-container {
+    padding-top: 20px;
+    width: 100%;
+    text-align: center;
+    color: red;
+}

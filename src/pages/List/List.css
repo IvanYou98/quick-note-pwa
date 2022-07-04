@@ -1,0 +1,18 @@
+.close-btn {
+    height: 20px;
+    width: 20px;
+}
+
+.add-btn-container {
+    z-index: 999;
+    position: fixed;
+    bottom: 100px;
+    right: 100px
+}
+
+.alertMessageContainer{
+    margin: auto;
+    width: 50%;
+    text-align: center;
+    color: cadetblue;
+}
