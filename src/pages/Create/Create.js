@@ -17,6 +17,7 @@ import "./Create.css";
 import { home } from "ionicons/icons";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { openDB } from "idb";
 
 const Create = () => {
     const navigate = useNavigate();
@@ -30,25 +31,45 @@ const Create = () => {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
 
+    const putToIndexDB = async (newNote) => {
+        const BASE_NAME = 'backgroundSync';
+        const STORE_NAME = 'messages';
+        const VERSION = 1;
+        const db = await openDB(BASE_NAME, VERSION);
+        db.add(STORE_NAME, newNote, newNote._id);
+        db.close();
+    }
+
     const handleCreate = async () => {
-        console.log("title", title);
-        console.log("content", content);
-        const res = await fetch("https://quick-note--backend.herokuapp.com/notes", {
-            method: "POST",
+        const newNote = {
+            title: title,
+            content: content,
+            userId: user.uid,
+            _id: new Date().getTime()
+        };
+        try {
+            const res = await fetch("https://quick-note--backend.herokuapp.com/notes", {
+                method: "POST",
+                body: JSON.stringify(newNote),
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                }
+            })
 
-            body: JSON.stringify({
-                title: title,
-                content: content,
-                userId: user.uid
-            }),
-
-            headers: {
-                "Content-type": "application/json; charset=UTF-8"
+            console.log(res);
+            navigate("/");
+        } catch (error) {
+            if (!window.navigator.onLine) {
+                putToIndexDB(newNote);
+                const sw = await window.navigator.serviceWorker.ready;
+                await sw.sync.register('back-sync');
+                // window.navigator.serviceWorker.ready.then(function (sw) {
+                //     console.log('register background sync');
+                //     return sw.sync.register('back-sync');
+                // });
+                navigate('/');
             }
-        })
-
-        console.log(res);
-        navigate("/");
+        }
     };
 
     return (

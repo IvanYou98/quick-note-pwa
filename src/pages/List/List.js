@@ -17,16 +17,38 @@ import "./List.css";
 import { addOutline, trashOutline } from "ionicons/icons";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { openDB } from 'idb';
+
 
 const List = () => {
   const currentUser = JSON.parse(localStorage.getItem("user"));
+
   const navigate = useNavigate();
   const [notes, setNotes] = useState([]);
   const [mode, setMode] = useState('online');
 
+
+
+  const createIndexDB = async () => {
+    const BASE_NAME = 'backgroundSync';
+    const STORE_NAME = 'messages';
+    const VERSION = 1;
+
+    // create database and store
+    openDB(BASE_NAME, VERSION, {
+      upgrade(db) {
+        db.createObjectStore(STORE_NAME);
+      },
+    });
+
+
+  }
+
+
   useEffect(() => {
     if (!currentUser) navigate("/login");
 
+    createIndexDB();
     fetch(`https://quick-note--backend.herokuapp.com/notes/${currentUser.uid}`)
       .then(reponse => {
         reponse.json()
@@ -36,9 +58,11 @@ const List = () => {
           })
       })
       .catch(err => {
-        setMode('offline');
-        let collection = localStorage.getItem("data");
-        setNotes(JSON.parse(collection));
+        if (!window.navigator.onLine) {
+          let collection = localStorage.getItem("data");
+          setNotes(JSON.parse(collection));
+          setMode('offline');
+        }
       })
   }, []);
 
