@@ -50,6 +50,7 @@ const Login = () => {
                             <IonIcon icon={mailOutline} size="large"></IonIcon>
                         </IonLabel>
                         <IonInput
+                            class="input-area"
                             placeholder="email"
                             value={email}
                             onIonChange={(e) => setEmail(e.target.value)}

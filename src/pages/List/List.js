@@ -46,7 +46,10 @@ const List = () => {
 
 
   useEffect(() => {
-    if (!currentUser) navigate("/login");
+    if (!currentUser) {
+      navigate("/login");
+      return;
+    }
 
     createIndexDB();
     fetch(`https://quick-note--backend.herokuapp.com/notes/${currentUser.uid}`)

@@ -15,8 +15,8 @@ this.addEventListener("install", event => {
                     '/',
                     '/logo-192.png',
                     '/ws',
-                    '/static/js/main.e442bf35.js',
-                    '/static/css/main.46d5106c.css',
+                    '/static/js/main.a4abfe8b.js',
+                    '/static/css/main.f56e4e4e.css',
                     '/manifest.json',
                 ])
             }
@@ -80,14 +80,15 @@ const resendPostRequest = async () => {
                 });
             })
             store.clear();
+
         }
     }
-
 }
 
 this.addEventListener('sync', async (event) => {
     if (event.tag === 'back-sync') {
         console.log('[Service Worker] is background syncing...');
         await resendPostRequest();
+        this.registration.showNotification('Your offilne notes have been sync!')
     }
 })

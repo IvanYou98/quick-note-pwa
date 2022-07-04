@@ -4,10 +4,10 @@
     text-align: center;
 }
 
-.login-btn-container {
+.login-btn-container{
     padding-top: 50px;
-    width: 20%;
-    margin: 0 auto;
+    width: 100%;
+    text-align: center;
 }
 
 .err-message-container {
@@ -16,3 +16,5 @@
     text-align: center;
     color: red;
 }
+
+    

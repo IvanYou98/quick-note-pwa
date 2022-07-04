@@ -27,17 +27,21 @@ import List from "./pages/List/List";
 
 setupIonicReact();
 
-const App = () => (
-  <div className="App">
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<List />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/create" element={<Create />} />
-      </Routes>
-    </BrowserRouter>
-  </div>
-);
+const App = () => {
+  return (
+    <div className="App">
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<List />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/create" element={<Create />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
+  )
+
+
+};
 
 export default App;
