@@ -10,6 +10,7 @@ import {
     IonInput,
     IonItem,
     IonLabel,
+    IonToggle,
     IonTextarea,
     IonFabButton,
 } from "@ionic/react";
@@ -30,6 +31,7 @@ const Create = () => {
 
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
+    const [isPrivate, setIsChecked] = useState(true);
 
     const putToIndexDB = async (newNote) => {
         const BASE_NAME = 'backgroundSync';
@@ -45,6 +47,7 @@ const Create = () => {
             title: title,
             content: content,
             userId: user.uid,
+            isPrivate: isPrivate,
             _id: new Date().getTime()
         };
         try {
@@ -82,7 +85,19 @@ const Create = () => {
             <IonContent class="ion-padding">
                 <IonList>
                     <IonItem>
-                        <IonLabel position="stacked" color="dark">
+                        <IonLabel color="dark">
+                            <h2>Private</h2>
+                        </IonLabel>
+                        <IonToggle
+                            checked={isPrivate}
+                            onIonChange={e => {
+                                setIsChecked(e.detail.checked)
+                            }}
+                        />
+
+                    </IonItem>
+                    <IonItem>
+                        <IonLabel color="dark">
                             <h2>Title</h2>
                         </IonLabel>
                         <IonInput
@@ -91,7 +106,7 @@ const Create = () => {
                         ></IonInput>
                     </IonItem>
                     <IonItem>
-                        <IonLabel position="stacked">
+                        <IonLabel>
                             <h2>Content</h2>
                         </IonLabel>
                         <IonTextarea

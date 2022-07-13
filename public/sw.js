@@ -15,7 +15,7 @@ this.addEventListener("install", event => {
                     '/',
                     '/logo-192.png',
                     '/ws',
-                    '/static/js/main.a4abfe8b.js',
+                    '/static/js/main.b06bcafe.js',
                     '/static/css/main.f56e4e4e.css',
                     '/manifest.json',
                 ])
@@ -92,3 +92,12 @@ this.addEventListener('sync', async (event) => {
         this.registration.showNotification('Your offilne notes have been sync!')
     }
 })
+
+
+this.addEventListener('push', e => {
+    const data = e.data.json();
+    console.log('Push Received');
+    this.registration.showNotification(data.title, {
+        title: 'You received a public note!'
+    });
+});

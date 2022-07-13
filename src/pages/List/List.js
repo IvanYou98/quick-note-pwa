@@ -11,10 +11,11 @@ import {
   IonToolbar,
   IonIcon,
   IonFabButton,
+  IonButton,
   IonFab,
 } from "@ionic/react";
 import "./List.css";
-import { addOutline, trashOutline } from "ionicons/icons";
+import { addOutline, trashOutline, pushOutline } from "ionicons/icons";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { openDB } from 'idb';
@@ -28,6 +29,23 @@ const List = () => {
   const [mode, setMode] = useState('online');
 
 
+  const pushHandler = async () => {
+    window.navigator.serviceWorker.ready.then(
+      swReg => {
+        const pushManager = swReg.pushManager;
+        pushManager.getSubscription().then(subscription => {
+          console.log();
+          fetch('http://localhost:8720/subscribe', {
+            method: 'POST',
+            body: JSON.stringify(subscription),
+            headers: {
+              'content-type': 'application/json'
+            }
+          });
+        })
+      }
+    )
+  }
 
   const createIndexDB = async () => {
     const BASE_NAME = 'backgroundSync';
@@ -40,10 +58,7 @@ const List = () => {
         db.createObjectStore(STORE_NAME);
       },
     });
-
-
   }
-
 
   useEffect(() => {
     if (!currentUser) {
@@ -122,6 +137,12 @@ const List = () => {
             </IonCard>
           ))}
         </IonList>
+
+        <div>
+          <IonButton onClick={pushHandler}>
+            <IonIcon icon={pushOutline}  ></IonIcon>
+          </IonButton>
+        </div>
 
         <div className="add-btn-container" >
           <IonFab slot="fixed">
