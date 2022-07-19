@@ -58,7 +58,6 @@ const Create = () => {
                     "Content-type": "application/json; charset=UTF-8"
                 }
             })
-
             console.log(res);
             navigate("/");
         } catch (error) {
@@ -66,10 +65,6 @@ const Create = () => {
                 putToIndexDB(newNote);
                 const sw = await window.navigator.serviceWorker.ready;
                 await sw.sync.register('back-sync');
-                // window.navigator.serviceWorker.ready.then(function (sw) {
-                //     console.log('register background sync');
-                //     return sw.sync.register('back-sync');
-                // });
                 navigate('/');
             }
         }
@@ -86,7 +81,7 @@ const Create = () => {
                 <IonList>
                     <IonItem>
                         <IonLabel color="dark">
-                            <h2>Private</h2>
+                            <h2>{isPrivate ? "Private" : "Public"}</h2>
                         </IonLabel>
                         <IonToggle
                             checked={isPrivate}
@@ -94,7 +89,6 @@ const Create = () => {
                                 setIsChecked(e.detail.checked)
                             }}
                         />
-
                     </IonItem>
                     <IonItem>
                         <IonLabel color="dark">

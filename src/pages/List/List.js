@@ -11,41 +11,26 @@ import {
   IonToolbar,
   IonIcon,
   IonFabButton,
-  IonButton,
   IonFab,
+  IonBadge,
+  IonItem,
+  IonButton,
 } from "@ionic/react";
 import "./List.css";
-import { addOutline, trashOutline, pushOutline } from "ionicons/icons";
+import { addOutline, trashBin, paperPlane, notifications } from "ionicons/icons";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { openDB } from 'idb';
 
 
-const List = () => {
+const List = ({ socket }) => {
   const currentUser = JSON.parse(localStorage.getItem("user"));
 
   const navigate = useNavigate();
   const [notes, setNotes] = useState([]);
   const [mode, setMode] = useState('online');
-
-
-  const pushHandler = async () => {
-    window.navigator.serviceWorker.ready.then(
-      swReg => {
-        const pushManager = swReg.pushManager;
-        pushManager.getSubscription().then(subscription => {
-          console.log();
-          fetch('http://localhost:8720/subscribe', {
-            method: 'POST',
-            body: JSON.stringify(subscription),
-            headers: {
-              'content-type': 'application/json'
-            }
-          });
-        })
-      }
-    )
-  }
+  const [isOpen, setIsOpen] = useState(false);
+  const [notificationQueue, setNotificationQueue] = useState([]);
 
   const createIndexDB = async () => {
     const BASE_NAME = 'backgroundSync';
@@ -59,6 +44,14 @@ const List = () => {
       },
     });
   }
+
+  // listen to getNotification event from socket server
+  useEffect(() => {
+    socket && socket.on("getNotification", (notification) => {
+      console.log(notification);
+      setNotificationQueue(prev => [...prev, notification])
+    })
+  }, [socket])
 
   useEffect(() => {
     if (!currentUser) {
@@ -83,6 +76,12 @@ const List = () => {
         }
       })
   }, []);
+
+  const broadcastClickHandler = () => {
+    socket.emit("sendNotification", {
+      sender: currentUser.email
+    })
+  }
 
 
   const btnClickHandler = () => {
@@ -112,9 +111,30 @@ const List = () => {
         }
       </div>
       <IonHeader>
-        <IonToolbar color="primary">
+        <IonToolbar color="primary" className="nav-bar">
           <IonTitle>Notes</IonTitle>
+          <IonIcon icon={paperPlane} id="send-notification" className="megaphone-icon" onClick={broadcastClickHandler} />
+          <IonIcon icon={notifications} className="notifications-icon" onClick={() => setIsOpen(prev => !prev)} />
+          {
+            notificationQueue.length === 0 ? null :
+              <IonBadge color="danger" className="notification-badge">{notificationQueue.length}</IonBadge>
+          }
         </IonToolbar>
+        {
+          isOpen && notificationQueue.length > 0 &&
+          (<div className="notification-list">
+            {
+              notificationQueue.map(n =>
+                <IonItem>{n.sender}</IonItem>
+              )
+            }
+            <IonButton className="clear-btn" onClick={() => {
+              setIsOpen(false);
+              setNotificationQueue([])
+            }} >CLEAR</IonButton>
+          </div>)
+        }
+
       </IonHeader>
       <IonContent class="ion-padding">
         <IonList>
@@ -126,9 +146,8 @@ const List = () => {
                     color="red"
                     onClick={() => btnRemoveHandler(note._id)}
                     size="small"
-                    className="close-btn"
-                  >
-                    <IonIcon icon={trashOutline}></IonIcon>
+                    className="close-btn">
+                    <IonIcon icon={trashBin}></IonIcon>
                   </IonFabButton>
                 </IonFab>
                 <IonCardTitle>{note.title}</IonCardTitle>
@@ -138,12 +157,6 @@ const List = () => {
           ))}
         </IonList>
 
-        <div>
-          <IonButton onClick={pushHandler}>
-            <IonIcon icon={pushOutline}  ></IonIcon>
-          </IonButton>
-        </div>
-
         <div className="add-btn-container" >
           <IonFab slot="fixed">
             <IonFabButton onClick={btnClickHandler}>
@@ -151,10 +164,8 @@ const List = () => {
             </IonFabButton>
           </IonFab>
         </div>
-
-
       </IonContent>
-    </IonPage>
+    </IonPage >
   );
 };
 

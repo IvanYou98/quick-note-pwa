@@ -24,15 +24,31 @@ import Create from "./pages/Create/Create";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import List from "./pages/List/List";
+import { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 
 setupIonicReact();
 
 const App = () => {
+  const [socket, setSocket] = useState(null);
+
+  // establish socket connection to socket server
+  useEffect(() => {
+    setSocket(io("http://localhost:8720"));
+  }, [])
+
+  useEffect(() => {
+    const currentUser = JSON.parse(localStorage.getItem("user"));
+    currentUser && socket && socket.emit("newUser", {
+      user: currentUser
+    })
+  }, [socket])
+
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<List />} />
+          <Route path="/" element={<List socket={socket} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/create" element={<Create />} />

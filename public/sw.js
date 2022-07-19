@@ -93,11 +93,3 @@ this.addEventListener('sync', async (event) => {
     }
 })
 
-
-this.addEventListener('push', e => {
-    const data = e.data.json();
-    console.log('Push Received');
-    this.registration.showNotification(data.title, {
-        title: 'You received a public note!'
-    });
-});
