@@ -1,5 +1,4 @@
 let CACHE_NAME = "appv3";
-console.log('service worker in the public folder');
 
 this.addEventListener("install", event => {
     console.log("caching app shell");
@@ -8,15 +7,11 @@ this.addEventListener("install", event => {
             cache => {
                 cache.addAll([
                     '/index.html',
-                    '/static/js/bundle.js',
+                    '/static/js/main.7dd0099e.js',
+                    '/static/css/main.e206c222.css',
                     '/favicon.ico',
-                    '/login',
-                    '/create',
                     '/',
                     '/logo-192.png',
-                    '/ws',
-                    '/static/js/main.b06bcafe.js',
-                    '/static/css/main.f56e4e4e.css',
                     '/manifest.json',
                 ])
             }

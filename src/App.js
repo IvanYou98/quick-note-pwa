@@ -34,8 +34,9 @@ const App = () => {
 
   // establish socket connection to socket server
   useEffect(() => {
-    setSocket(io("http://localhost:8720"));
+    setSocket(io("https://pwa-push-server.herokuapp.com"));
   }, [])
+
 
   useEffect(() => {
     const currentUser = JSON.parse(localStorage.getItem("user"));
