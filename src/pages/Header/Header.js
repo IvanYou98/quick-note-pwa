@@ -8,7 +8,7 @@ import {
     IonItem,
     IonButton,
 } from "@ionic/react";
-import { paperPlane, notifications } from "ionicons/icons";
+import { paperPlane, notifications, logOut } from "ionicons/icons";
 import "./Header.css"
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -25,6 +25,11 @@ const Header = ({ socket }) => {
         socket.emit("sendNotification", {
             sender: currentUser.email
         })
+    }
+
+    const handleLogout = () => {
+        localStorage.removeItem("user");
+        navigate("/login");
     }
 
     useEffect(() => {
@@ -44,6 +49,7 @@ const Header = ({ socket }) => {
                     notificationQueue.length === 0 ? null :
                         <IonBadge color="danger" className="notification-badge">{notificationQueue.length}</IonBadge>
                 }
+                <IonIcon icon={logOut} className="logout-icon" onClick={handleLogout} />
             </IonToolbar>
             {
                 isOpen && notificationQueue.length > 0 &&

@@ -29,18 +29,26 @@ const PublicPost = ({ socket }) => {
             res => {
                 res.json().then(data => {
                     console.log('public', data);
+                    localStorage.setItem("public", JSON.stringify(data))
                     setNotes(data)
                 })
+
+            }).catch(err => {
+                if (!window.navigator.onLine) {
+                    let collection = localStorage.getItem("public");
+                    console.log("collection: ", collection);
+                    setNotes(JSON.parse(collection));
+                }
             })
     }, [])
 
     useEffect(() => {
         socket && socket.on("getPublicPost", (creater) => {
-            console.log(`Wow, I received a post from ${creater}`)
             fetch(`${BACKEND_HOST}/public/`).then(
                 res => {
                     res.json().then(data => {
                         console.log('public', data);
+                        localStorage.setItem("public", JSON.stringify(data))
                         setNotes(data)
                     })
                 })
@@ -60,7 +68,6 @@ const PublicPost = ({ socket }) => {
                                             <IonFabButton
                                                 color="danger"
                                                 onClick={() => btnRemoveHandler(note._id)}
-                                                size="small"
                                                 className="close-btn">
                                                 <IonIcon icon={closeCircle}></IonIcon>
                                             </IonFabButton>

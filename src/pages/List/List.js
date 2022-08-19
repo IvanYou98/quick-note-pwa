@@ -13,7 +13,7 @@ import {
   IonItemDivider
 } from "@ionic/react";
 import "./List.css";
-import { addOutline, trashBin } from "ionicons/icons";
+import { addOutline, closeCircle } from "ionicons/icons";
 import { useNavigate } from "react-router-dom";
 import { Fragment, useEffect, useState } from "react";
 import { openDB } from 'idb';
@@ -23,12 +23,15 @@ import Header from "../Header/Header";
 
 
 const List = ({ socket }) => {
-  const currentUser = JSON.parse(localStorage.getItem("user"));
 
   const navigate = useNavigate();
   const [notes, setNotes] = useState([]);
   const [mode, setMode] = useState('online');
 
+  useEffect(() => {
+    console.log("we have access to the internet!");
+    setMode("online")
+  }, [socket])
 
   const createIndexDB = async () => {
     const BASE_NAME = 'backgroundSync';
@@ -44,14 +47,20 @@ const List = ({ socket }) => {
   }
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      navigate("/login");
+      return
+    }
+
     createIndexDB();
-    fetch(`${BACKEND_HOST}/notes/${currentUser.uid}`)
+    fetch(`${BACKEND_HOST}/notes/${user.uid}`)
       .then(reponse => {
         reponse.json()
           .then(result => {
-            console.log('notes:', result);
             localStorage.setItem("data", JSON.stringify(result));
             setNotes(result);
+            setMode("online")
           })
       })
       .catch(err => {
@@ -101,11 +110,10 @@ const List = ({ socket }) => {
                   <IonCardHeader>
                     <IonFab vertical="top" horizontal="end">
                       <IonFabButton
-                        color="red"
+                        color="danger"
                         onClick={() => btnRemoveHandler(note._id)}
-                        size="small"
                         className="close-btn">
-                        <IonIcon icon={trashBin}></IonIcon>
+                        <IonIcon icon={closeCircle}></IonIcon>
                       </IonFabButton>
                     </IonFab>
                     <IonCardTitle>{note.title}</IonCardTitle>

@@ -48,6 +48,7 @@ const Create = ({ socket }) => {
             title: title,
             content: content,
             userId: user.uid,
+            isPrivate: isPrivate,
             _id: new Date().getTime()
         };
         try {

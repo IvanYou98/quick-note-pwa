@@ -7,8 +7,8 @@ this.addEventListener("install", event => {
             cache => {
                 cache.addAll([
                     '/index.html',
-                    '/static/js/main.7dd0099e.js',
-                    '/static/css/main.e206c222.css',
+                    '/static/js/main.b9931a46.js',
+                    '/static/css/main.942fcb14.css',
                     '/favicon.ico',
                     '/',
                     '/logo-192.png',
@@ -63,7 +63,8 @@ const resendPostRequest = async () => {
             const BACKEND_HOST = 'http://localhost:8000';
             console.log('query is successful!');
             query.result.forEach(note => {
-                fetch(`${BACKEND_HOST}/notes`, {
+                const url = BACKEND_HOST + (note.isPrivate ? "/notes" : "/public");
+                fetch(url, {
                     method: "POST",
                     body: JSON.stringify(note),
                     headers: {
@@ -76,7 +77,6 @@ const resendPostRequest = async () => {
                 });
             })
             store.clear();
-
         }
     }
 }

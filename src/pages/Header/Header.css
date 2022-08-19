@@ -21,6 +21,14 @@
     cursor: pointer;
 }
 
+.logout-icon {
+    position: absolute;
+    right: 100px;
+    top: 15px;
+    height: 23px;
+    width: 23px;
+    cursor: pointer;
+}
 
 .notifications-icon {
     position: absolute;
