@@ -26,15 +26,15 @@ import Register from "./pages/Register/Register";
 import List from "./pages/List/List";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import { NOTIFICATION_HOST } from "./constants";
 
 setupIonicReact();
 
 const App = () => {
   const [socket, setSocket] = useState(null);
-
   // establish socket connection to socket server
   useEffect(() => {
-    setSocket(io("https://pwa-push-server.herokuapp.com"));
+    setSocket(io(NOTIFICATION_HOST));
   }, [])
 
 
@@ -52,7 +52,7 @@ const App = () => {
           <Route path="/" element={<List socket={socket} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/create" element={<Create />} />
+          <Route path="/create" element={<Create socket={socket} />} />
         </Routes>
       </BrowserRouter>
     </div>

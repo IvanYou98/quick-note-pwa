@@ -60,9 +60,10 @@ const resendPostRequest = async () => {
         console.log(query);
 
         query.onsuccess = () => {
+            const BACKEND_HOST = 'http://localhost:8000';
             console.log('query is successful!');
             query.result.forEach(note => {
-                fetch("https://quick-note--backend.herokuapp.com/notes", {
+                fetch(`${BACKEND_HOST}/notes`, {
                     method: "POST",
                     body: JSON.stringify(note),
                     headers: {

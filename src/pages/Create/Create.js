@@ -19,8 +19,9 @@ import { home } from "ionicons/icons";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { openDB } from "idb";
+import { BACKEND_HOST } from "../../constants";
 
-const Create = () => {
+const Create = ({ socket }) => {
     const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem("user"));
     if (user === null) navigate("/");
@@ -47,11 +48,11 @@ const Create = () => {
             title: title,
             content: content,
             userId: user.uid,
-            isPrivate: isPrivate,
             _id: new Date().getTime()
         };
         try {
-            const res = await fetch("https://quick-note--backend.herokuapp.com/notes", {
+            const url = BACKEND_HOST + (isPrivate ? "/notes" : "/public");
+            const res = await fetch(url, {
                 method: "POST",
                 body: JSON.stringify(newNote),
                 headers: {
@@ -59,6 +60,12 @@ const Create = () => {
                 }
             })
             console.log(res);
+            if (!isPrivate) {
+                socket.emit("newPublicPost", {
+                    sender: JSON.parse(localStorage.getItem("user")).email
+                })
+            }
+
             navigate("/");
         } catch (error) {
             if (!window.navigator.onLine) {
