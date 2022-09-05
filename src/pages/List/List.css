@@ -13,3 +13,16 @@
 .list-container {
     margin-top: 50px;
 }
+
+.offline-notification {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.refresh-icon {
+    margin-right: 20px;
+    font-size: 30px;
+    cursor: pointer;
+}

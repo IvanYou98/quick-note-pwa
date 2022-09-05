@@ -1,5 +1,6 @@
 let CACHE_NAME = "appv3";
 
+// caching the static files for offline use
 this.addEventListener("install", event => {
     console.log("caching app shell");
     event.waitUntil(
@@ -7,8 +8,8 @@ this.addEventListener("install", event => {
             cache => {
                 cache.addAll([
                     '/index.html',
-                    '/static/js/main.b9931a46.js',
-                    '/static/css/main.942fcb14.css',
+                    '/static/js/main.e511ae19.js',
+                    '/static/css/main.f32401f7.css',
                     '/favicon.ico',
                     '/',
                     '/logo-192.png',
@@ -38,6 +39,7 @@ this.addEventListener("fetch", event => {
     }
 })
 
+// resend all the requests stored inside indexDB to the backend server
 const resendPostRequest = async () => {
     const BASE_NAME = 'backgroundSync';
     const STORE_NAME = 'messages';
@@ -60,7 +62,8 @@ const resendPostRequest = async () => {
         console.log(query);
 
         query.onsuccess = () => {
-            const BACKEND_HOST = 'http://localhost:8000';
+            // const BACKEND_HOST = 'http://localhost:8000';
+            const BACKEND_HOST = 'https://quick-note--backend.herokuapp.com';
             console.log('query is successful!');
             query.result.forEach(note => {
                 const url = BACKEND_HOST + (note.isPrivate ? "/notes" : "/public");
@@ -81,11 +84,12 @@ const resendPostRequest = async () => {
     }
 }
 
+// when the user resume the internet connection, resend all the requests in indexDB
 this.addEventListener('sync', async (event) => {
     if (event.tag === 'back-sync') {
         console.log('[Service Worker] is background syncing...');
         await resendPostRequest();
-        this.registration.showNotification('Your offilne notes have been sync!')
+        this.location.reload();
     }
 })
 

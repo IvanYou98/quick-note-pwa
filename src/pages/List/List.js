@@ -13,7 +13,7 @@ import {
   IonItemDivider
 } from "@ionic/react";
 import "./List.css";
-import { addOutline, closeCircle } from "ionicons/icons";
+import { addOutline, closeCircle, refresh } from "ionicons/icons";
 import { useNavigate } from "react-router-dom";
 import { Fragment, useEffect, useState } from "react";
 import { openDB } from 'idb';
@@ -77,6 +77,10 @@ const List = ({ socket }) => {
     navigate("/create");
   };
 
+  const handleRefresh = () => {
+    window.location.reload();
+  }
+
   const btnRemoveHandler = async (noteId) => {
     console.log(noteId);
     const response = await fetch(`${BACKEND_HOST}/notes/${noteId}`, {
@@ -97,7 +101,10 @@ const List = ({ socket }) => {
         <div>
           {
             mode === 'offline' ? <div className="alertMessageContainer">
-              <h1>You are in offline mode</h1>
+              <div className="offline-notification">
+                <h1>You are in offline mode, click for refresh</h1>
+                <IonIcon className="refresh-icon" icon={refresh} onClick={handleRefresh}></IonIcon>
+              </div>
             </div> : null
           }
         </div>
